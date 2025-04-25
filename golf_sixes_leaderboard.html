@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Junior Golf Leaderboard</title>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+      google.charts.load('current', { packages: ['table'] });
+      google.charts.setOnLoadCallback(drawTable);
+
+      function drawTable() {
+        const queryString = encodeURIComponent('SELECT A, B, C, D');
+        const sheetID = '1cl9_V0IaYTayKEi0l4x5bMuDBAwjd5A0-Iwo57-ldUE';
+        const sheetName = 'Golf Sixes';
+
+        const query = new google.visualization.Query(
+          `https://docs.google.com/spreadsheets/d/${sheetID}/gviz/tq?sheet=${sheetName}&tq=${queryString}`
+        );
+
+        query.send(function (response) {
+          if (response.isError()) {
+            document.getElementById('error').innerText =
+              'Error: ' + response.getMessage() + ' ' + response.getDetailedMessage();
+            return;
+          }
+
+          const data = response.getDataTable();
+          const table = new google.visualization.Table(document.getElementById('leaderboard'));
+          table.draw(data, { showRowNumber: true, width: '100%', height: 'auto' });
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <h2>Junior Golf Team Leaderboard</h2>
+    <div id="leaderboard"></div>
+    <div id="error" style="color: red;"></div>
+  </body>
+</html>
